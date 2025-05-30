@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 INSTALLED_APPS = [
     "src.apps.yield_curves.apps.YieldCurvesConfig",
     "django.contrib.admin",
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

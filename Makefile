@@ -21,3 +21,6 @@ down:
 
 local-run:
 	CONFIG_PATH=settings/local/conf.yml sh ./entrypoint.sh
+
+get-bund-data:
+	python -m src.manage runscript get_bund_data

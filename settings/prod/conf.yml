@@ -1,0 +1,6 @@
+db:
+  yield_curves:
+    host: postgres # Docker compose service name.
+    port: 5432
+    user: postgres
+    name: yield_curves
