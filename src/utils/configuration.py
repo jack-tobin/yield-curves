@@ -1,21 +1,23 @@
 """Configuration facilitator."""
 
 import os
-import yaml
 from pathlib import Path
 from typing import Any
+
+import yaml
+
 
 class Configuration:
     ENV_VAR_PREFIX = "CONFIG__"
 
     def __init__(self):
         self._config = None
+        self._config_path = None
         self._load_config()
 
     def _find_config_path(self) -> Path:
-        config_path_env = os.getenv('CONFIG_PATH')
+        config_path_env = os.getenv("CONFIG_PATH")
         if config_path_env:
-            print(config_path_env)
             config_path = Path(config_path_env)
             if config_path.is_file():
                 return config_path
@@ -31,11 +33,10 @@ class Configuration:
         self._config_path = self._find_config_path()
         with self._config_path.open("r") as file:
             self._config = yaml.safe_load(file) or {}
-        self._config.update(self._get_config_vars_from_environment())
-        
-    def _get_config_vars_from_environment(self) -> dict[str, Any]:
-        environment = {}
+        self._load_config_from_environment()
+        print(self._config)
 
+    def _load_config_from_environment(self) -> dict[str, Any]:
         # Load .env file, if present.
         # Note this overrides existing environment variables.
         dotenv_path = Path.cwd() / ".env"
@@ -47,16 +48,15 @@ class Configuration:
         # Converts nested keys using double underscore '__' as delimiter.
         for key, value in os.environ.items():
             if key.startswith(self.ENV_VAR_PREFIX):
-                config_keys = key[len(self.ENV_VAR_PREFIX):].lower()
-                *path_keys, last_key = config_keys.split('__')
+                config_keys = key[len(self.ENV_VAR_PREFIX) :].lower()
+                *path_keys, last_key = config_keys.split("__")
+                config = self._config
                 for k in path_keys:
-                    environment = environment.setdefault(k, {})
-                environment[last_key] = value
-
-        return environment
+                    config = config.setdefault(k, {})
+                config[last_key] = value
 
     def get(self, key: str, default: Any = None) -> Any:
-        keys = key.split('.')
+        keys = key.split(".")
         current = self._config
 
         try:

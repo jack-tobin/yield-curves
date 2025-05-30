@@ -1,5 +1,4 @@
-"""
-WSGI config for yield_curves_project project.
+"""WSGI config for yield curves project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +10,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yield_curves_project.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.config.settings")
 
 application = get_wsgi_application()
