@@ -34,7 +34,6 @@ class Configuration:
         with self._config_path.open("r") as file:
             self._config = yaml.safe_load(file) or {}
         self._load_config_from_environment()
-        print(self._config)
 
     def _load_config_from_environment(self) -> dict[str, Any]:
         # Load .env file, if present.
