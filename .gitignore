@@ -15,5 +15,5 @@ wheels/
 .zed/
 
 # Local conf
-conf.yml
+/conf.yml
 .env

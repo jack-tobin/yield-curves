@@ -1,0 +1,7 @@
+db:
+  django_test:
+    name: django_test
+    user: test_username
+    password: none_set
+    host: test_host
+    port: test_port
