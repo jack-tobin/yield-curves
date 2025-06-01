@@ -1,6 +1,8 @@
+env: local
+
 db:
   yield_curves:
-    host: localhost
+    host: dpg-d0u5sere5dus738o10t0-a.frankfurt-postgres.render.com
     port: 5432
-    user: postgres
+    user: app
     name: yield_curves
