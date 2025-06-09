@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - Yield Curves{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Create Account</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="username"
+                               name="username"
+                               value="{{ request.POST.username|default:'' }}"
+                               placeholder="Choose a username"
+                               required>
+                        <div class="form-text">Must be at least 3 characters long.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="first_name"
+                               name="first_name"
+                               value="{{ request.POST.first_name|default:'' }}"
+                               placeholder="Enter your first name"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               name="email"
+                               value="{{ request.POST.email|default:'' }}"
+                               placeholder="your.email@example.com"
+                               required>
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password"
+                               class="form-control"
+                               id="password1"
+                               name="password1"
+                               placeholder="Create a password"
+                               required>
+                        <div class="form-text">Must be at least 8 characters long.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                        <input type="password"
+                               class="form-control"
+                               id="password2"
+                               name="password2"
+                               placeholder="Confirm your password"
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                </form>
+
+                <hr class="my-3">
+
+                <div class="text-center">
+                    <p class="mb-0">Already have an account?
+                        <a href="{% url 'accounts:login' %}" class="text-decoration-none">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
