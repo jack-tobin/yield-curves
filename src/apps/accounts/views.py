@@ -92,6 +92,85 @@ def signup_view(request):
     return render(request, "accounts/signup.html")
 
 
+@login_required
+def profile_view(request):
+    """Handle user profile management."""
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "update_profile":
+            # Handle profile update
+            username = request.POST.get("username", "").strip()
+            email = request.POST.get("email", "").strip()
+            current_password = request.POST.get("current_password", "")
+            new_password = request.POST.get("new_password", "")
+            confirm_password = request.POST.get("confirm_password", "")
+
+            errors = []
+
+            # Validate username
+            if not username:
+                errors.append("Username is required.")
+            elif username != request.user.username and User.objects.filter(username=username).exists():
+                errors.append("Username already exists.")
+            elif len(username) < 3:
+                errors.append("Username must be at least 3 characters long.")
+
+            # Validate email
+            if not email:
+                errors.append("Email is required.")
+            elif email != request.user.email and User.objects.filter(email=email).exists():
+                errors.append("Email already registered.")
+
+            # Validate password change (if provided)
+            if new_password:
+                if not current_password:
+                    errors.append("Current password is required to change password.")
+                elif not request.user.check_password(current_password):
+                    errors.append("Current password is incorrect.")
+                elif len(new_password) < 8:
+                    errors.append("New password must be at least 8 characters long.")
+                elif new_password != confirm_password:
+                    errors.append("New passwords do not match.")
+
+            if errors:
+                for error in errors:
+                    messages.error(request, error)
+            else:
+                # Update user information
+                request.user.username = username
+                request.user.email = email
+
+                # Update password if provided
+                if new_password:
+                    request.user.set_password(new_password)
+                    # Re-authenticate user after password change
+                    user = authenticate(request, username=username, password=new_password)
+                    if user:
+                        login(request, user)
+
+                request.user.save()
+                messages.success(request, "Your profile has been updated successfully!")
+                return redirect("accounts:profile")
+
+        elif action == "delete_account":
+            # Handle account deletion
+            password = request.POST.get("delete_password", "")
+
+            if not password:
+                messages.error(request, "Password is required to delete your account.")
+            elif not request.user.check_password(password):
+                messages.error(request, "Password is incorrect.")
+            else:
+                # Delete user account
+                username = request.user.username
+                request.user.delete()
+                messages.success(request, f"Account for {username} has been deleted successfully.")
+                return redirect("home")
+
+    return render(request, "accounts/profile.html")
+
+
 def home_view(request):
     """Home page view."""
     return render(request, "home.html")
