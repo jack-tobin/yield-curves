@@ -20,6 +20,7 @@ def redis_connection_error_handler(func):
         except Exception as e:
             logger.error(f"Error in Redis operation: {e}")
             raise
+
     return wrapper
 
 
@@ -93,5 +94,7 @@ def cache(ttl: int | None = None):
             value = func(*args, **kwargs)
             client.set(key, value, expire=ttl)
             return value
+
         return wrapper
+
     return decorator

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - Yield Curves{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'yield_curves:dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Analytics</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Yield Curve Analytics</h1>
+            <div class="btn-group">
+                <button class="btn btn-outline-primary btn-sm" onclick="saveAnalysis()">Save Analysis</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="scheduleReport()">Schedule Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Analysis Configuration</h5>
+            </div>
+            <div class="card-body">
+                <form class="row g

@@ -5,32 +5,50 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Bond',
+            name="Bond",
             fields=[
-                ('isin', models.CharField(max_length=255, primary_key=True, serialize=False, unique=True)),
-                ('description', models.TextField()),
-                ('maturity_date', models.DateField()),
-                ('coupon', models.DecimalField(decimal_places=4, max_digits=16)),
+                (
+                    "isin",
+                    models.CharField(
+                        max_length=255, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("description", models.TextField()),
+                ("maturity_date", models.DateField()),
+                ("coupon", models.DecimalField(decimal_places=4, max_digits=16)),
             ],
         ),
         migrations.CreateModel(
-            name='BondMetric',
+            name="BondMetric",
             fields=[
-                ('date', models.DateField()),
-                ('isin', models.CharField(max_length=255)),
-                ('clean_price', models.DecimalField(decimal_places=4, max_digits=16)),
-                ('dirty_price', models.DecimalField(decimal_places=4, max_digits=16)),
-                ('_yield', models.DecimalField(db_column='yield', decimal_places=4, max_digits=16)),
-                ('pk', models.CompositePrimaryKey('date', 'isin', blank=True, editable=False, primary_key=True, serialize=False)),
-                ('bond', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='yield_curves.bond')),
+                ("date", models.DateField()),
+                ("isin", models.CharField(max_length=255)),
+                ("clean_price", models.DecimalField(decimal_places=4, max_digits=16)),
+                ("dirty_price", models.DecimalField(decimal_places=4, max_digits=16)),
+                ("_yield", models.DecimalField(db_column="yield", decimal_places=4, max_digits=16)),
+                (
+                    "pk",
+                    models.CompositePrimaryKey(
+                        "date",
+                        "isin",
+                        blank=True,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "bond",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="yield_curves.bond"
+                    ),
+                ),
             ],
         ),
     ]

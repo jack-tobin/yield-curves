@@ -1,4 +1,3 @@
-
 from django.utils.connection import cached_property
 from src.utils.configuration import conf
 from sqlalchemy import create_engine

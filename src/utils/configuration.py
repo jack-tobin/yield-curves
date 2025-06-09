@@ -41,6 +41,7 @@ class Configuration:
         dotenv_path = Path.cwd() / ".env"
         if dotenv_path.is_file():
             from dotenv import load_dotenv
+
             load_dotenv(dotenv_path=dotenv_path, override=True)
 
         # Insert environment variables with prefix self.ENV_VAR_PREFIX.
