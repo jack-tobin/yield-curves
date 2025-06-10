@@ -304,6 +304,8 @@ class BundesbankDataLoader(Loader):
                 coupon=row["coupon"],
                 maturity_date=row["maturity_date"],
                 issue_volume=row["issue_volume"],
+                is_green="green" in row["description"].lower(),
+                is_indexed="index" in row["description"].lower(),
             )
             if bond not in bonds_to_insert:
                 bonds_to_insert.append(bond)
@@ -324,7 +326,14 @@ class BundesbankDataLoader(Loader):
             bonds_to_insert,
             update_conflicts=True,
             unique_fields=["isin"],
-            update_fields=["description", "coupon", "maturity_date", "issue_volume"],
+            update_fields=[
+                "description",
+                "coupon",
+                "maturity_date",
+                "issue_volume",
+                "is_green",
+                "is_indexed",
+            ],
         )
 
         logger.info(f"Inserting {len(metrics_to_insert)} bond metric rows...")

@@ -9,6 +9,8 @@ class Bond(models.Model):
     maturity_date = models.DateField()
     coupon = models.DecimalField(max_digits=16, decimal_places=4)
     issue_volume = models.DecimalField(max_digits=16, decimal_places=4, null=True)
+    is_green = models.BooleanField(default=False)
+    is_indexed = models.BooleanField(default=False)
 
     @property
     def country(self):
@@ -47,3 +49,31 @@ class Analysis(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+
+
+class BondScatter(models.Model):
+    analysis = models.ForeignKey(Analysis, on_delete=models.CASCADE, related_name='bond_scatters')
+    country = models.CharField(max_length=2)  # e.g., "DE", "US"
+    date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def get_bond_data(self):
+        """Get bond data for this scatter configuration."""
+        bond_metrics = BondMetric.objects.filter(
+            date=self.date,
+            isin__startswith=self.country,
+            bond__is_green=False,
+            bond__is_indexed=False,
+        ).select_related('bond')
+
+        return bond_metrics
+
+
+class YieldCurve(models.Model):
+    bond_scatter = models.OneToOneField(BondScatter, on_delete=models.CASCADE, related_name='yield_curve')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

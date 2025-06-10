@@ -104,6 +104,17 @@ shell-prod:
 	@echo "🐍 Opening Django shell with production database (app user)..."
 	CONFIG_PATH=settings/prod/conf.yml python -m src.manage shell
 
+
+# =============================================================================
+# Scripts
+# =============================================================================
+
+get-data-local:
+	CONFIG_PATH=settings/local/conf.yml CONFIG__DB__YIELD_CURVES__PASSWORD=postgres python -m src.manage runscript get_bund_data
+
+get-data-prod:
+	CONFIG_PATH=settings/prod/conf.yml python -m src.manage runscript get_bund_data
+
 # =============================================================================
 # Testing
 # =============================================================================
@@ -155,7 +166,6 @@ help:
 clean:
 	@echo "🧹 Cleaning up..."
 	docker compose down -v
-	docker system prune -f
 
 .PHONY: help db-up db-down redis-up redis-down services-up services-down
 .PHONY: run-local run-docker run-local-prod
