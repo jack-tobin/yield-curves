@@ -13,10 +13,9 @@
                 <div class="list-group">
                     {% for analysis in analyses %}
                         <a href="{% url 'yield_curves:analysis_detail' analysis.id %}"
-                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">{{ analysis.name }}</div>
-                                <small class="text-muted">Country: {{ analysis.country }} | Date: {{ analysis.date }}</small>
                             </div>
                             <div class="text-end">
                                 <small class="text-muted d-block">Created: {{ analysis.created_at|date:"M d, Y H:i" }}</small>

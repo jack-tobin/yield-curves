@@ -40,10 +40,6 @@ def create_analysis(request):
         errors = []
         if not name:
             errors.append("Analysis name is required.")
-        if not country:
-            errors.append("Country is required.")
-        if not analysis_date:
-            errors.append("Analysis date is required.")
 
         if errors:
             for error in errors:
@@ -51,7 +47,7 @@ def create_analysis(request):
         else:
             # Create the analysis
             analysis = Analysis.objects.create(
-                user=request.user, name=name, country=country, date=analysis_date
+                user=request.user, name=name,
             )
             messages.success(request, f'Analysis "{name}" created successfully!')
             return redirect("yield_curves:analysis_detail", analysis_id=analysis.id)

@@ -42,28 +42,6 @@
                             <div class="form-text">Give your analysis a descriptive name.</div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="country" class="form-label">Country <span class="text-danger">*</span></label>
-                            <select class="form-select" id="country" name="country" required>
-                                <option value="">Select a country</option>
-                                <option value="DE" {% if request.POST.country == 'DE' %}selected{% endif %}>Germany</option>
-                            </select>
-                            <div class="form-text">Select the country for your yield curve analysis.</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="date" class="form-label">Analysis Date <span class="text-danger">*</span></label>
-                            <input type="date"
-                                   class="form-control"
-                                   id="date"
-                                   name="date"
-                                   value="{{ request.POST.date|default:today }}"
-                                   required>
-                            <div class="form-text">The date for which you want to analyze the yield curve.</div>
-                        </div>
-
-                        <hr>
-
                         <div class="d-flex justify-content-between">
                             <a href="{% url 'yield_curves:analyses_list' %}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Create Analysis</button>
