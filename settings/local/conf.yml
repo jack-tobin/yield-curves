@@ -6,3 +6,5 @@ db:
     port: 5432
     user: postgres
     name: yield_curves
+
+debug: true

@@ -7,3 +7,5 @@ db:
     password: none_set
     host: test_host
     port: test_port
+
+debug: false
