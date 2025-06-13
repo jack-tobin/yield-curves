@@ -60,20 +60,6 @@ export class ScatterManager {
     }
   }
 
-
-
-  selectAllScatters() {
-    const chips = document.querySelectorAll(".scatter-chip");
-    chips.forEach((chip) => (chip.dataset.visible = "true"));
-    window.chartManager?.loadAllSelectedScatters();
-  }
-
-  deselectAllScatters() {
-    const chips = document.querySelectorAll(".scatter-chip");
-    chips.forEach((chip) => (chip.dataset.visible = "false"));
-    window.chartManager?.loadAllSelectedScatters();
-  }
-
   async addNewScatter(country, date) {
     try {
       const data = await API.post(
