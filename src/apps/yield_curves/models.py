@@ -1,6 +1,5 @@
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Bond(models.Model):
@@ -51,14 +50,14 @@ class Analysis(models.Model):
 
 
 class BondScatter(models.Model):
-    analysis = models.ForeignKey(Analysis, on_delete=models.CASCADE, related_name='bond_scatters')
+    analysis = models.ForeignKey(Analysis, on_delete=models.CASCADE, related_name="bond_scatters")
     country = models.CharField(max_length=2)  # e.g., "DE", "US"
     date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ["created_at"]
 
     def get_bond_data(self):
         """Get bond data for this scatter configuration."""
@@ -67,12 +66,14 @@ class BondScatter(models.Model):
             isin__startswith=self.country,
             bond__is_green=False,
             bond__is_indexed=False,
-        ).select_related('bond')
+        ).select_related("bond")
 
         return bond_metrics
 
 
 class YieldCurve(models.Model):
-    bond_scatter = models.OneToOneField(BondScatter, on_delete=models.CASCADE, related_name='yield_curve')
+    bond_scatter = models.OneToOneField(
+        BondScatter, on_delete=models.CASCADE, related_name="yield_curve"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

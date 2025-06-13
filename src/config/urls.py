@@ -1,7 +1,8 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
+
 from src.apps.yield_curves.views import analysis_list
 
 urlpatterns = [
@@ -10,6 +11,7 @@ urlpatterns = [
     path("yield-curves/", include("src.apps.yield_curves.urls")),
     path("yield-curves/analysis", analysis_list, name="home"),
 ]
+
 
 # Serve static files during development
 if settings.DEBUG:

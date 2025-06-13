@@ -1,9 +1,8 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.urls import reverse
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
 
 
 def login_view(request):
@@ -78,15 +77,13 @@ def signup_view(request):
                 messages.error(request, error)
         else:
             # Create the user
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password1
-            )
+            user = User.objects.create_user(username=username, email=email, password=password1)
 
             # Log the user in automatically
             login(request, user)
-            messages.success(request, f"Welcome {username}! Your account has been created successfully.")
+            messages.success(
+                request, f"Welcome {username}! Your account has been created successfully."
+            )
             return redirect("home")
 
     return render(request, "accounts/signup.html")
@@ -111,7 +108,10 @@ def profile_view(request):
             # Validate username
             if not username:
                 errors.append("Username is required.")
-            elif username != request.user.username and User.objects.filter(username=username).exists():
+            elif (
+                username != request.user.username
+                and User.objects.filter(username=username).exists()
+            ):
                 errors.append("Username already exists.")
             elif len(username) < 3:
                 errors.append("Username must be at least 3 characters long.")
@@ -169,8 +169,3 @@ def profile_view(request):
                 return redirect("home")
 
     return render(request, "accounts/profile.html")
-
-
-def home_view(request):
-    """Home page view."""
-    return render(request, "home.html")
