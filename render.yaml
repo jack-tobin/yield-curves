@@ -1,0 +1,11 @@
+databases:
+  - name: yield-curves
+    databaseName: yield_curves
+    user: admin
+    plan: free
+    region: frankfurt
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "16"
+version: "1"
