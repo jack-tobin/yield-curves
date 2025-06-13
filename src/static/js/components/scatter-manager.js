@@ -63,7 +63,7 @@ export class ScatterManager {
   async addNewScatter(country, date) {
     try {
       const data = await API.post(
-        `/yield-curves/analysis/${this.analysisId}/add_scatter/`,
+        `/yield-curves/analysis/${this.analysisId}/scatter/add`,
         {
           country,
           date,
