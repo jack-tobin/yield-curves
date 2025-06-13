@@ -17,7 +17,6 @@ from src.apps.yield_curves.models import Analysis, Bond, BondMetric, BondScatter
 def analysis_list(request):
     analyses = Analysis.objects.filter(
         user=request.user,
-        is_deleted=False,
     ).order_by("-updated_at")
     context = {"analyses": analyses}
     return render(request, "yield_curves/analysis_list.html", context)
@@ -65,28 +64,10 @@ def create_analysis(request):
 
 @login_required
 def delete_analysis(request, analysis_id):
-    """Soft delete a specific analysis."""
-    analysis = get_object_or_404(Analysis, id=analysis_id, user=request.user, is_deleted=False)
-    analysis.is_deleted = True
-    analysis.save()
-
-    # Create a message with undo link
-    undo_url = request.build_absolute_uri(f"/yield-curves/undo_delete_analysis/{analysis.id}/")
-    message_html = f'''Analysis "{analysis.name}" has been deleted.
-    <a href="{undo_url}" class="alert-link fw-bold text-decoration-underline">Undo</a>'''
-
-    messages.success(request, message_html, extra_tags="safe")
-    return redirect("yield_curves:analysis_list")
-
-
-@login_required
-def undo_delete_analysis(request, analysis_id):
-    """Undo soft delete of a specific analysis."""
-    analysis = get_object_or_404(Analysis, id=analysis_id, user=request.user, is_deleted=True)
-    analysis.is_deleted = False
-    analysis.save()
-
-    messages.success(request, f'Analysis "{analysis.name}" has been restored.')
+    """Hard delete a specific analysis."""
+    analysis = get_object_or_404(Analysis, id=analysis_id, user=request.user)
+    analysis.delete()
+    messages.success(request, f"Analysis '{analysis.name}' has been deleted.")
     return redirect("yield_curves:analysis_list")
 
 
