@@ -21,7 +21,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ipython>=8.36.0"]
+dev = [
+    "ipython>=8.36.0",
+    "vulture>=2.14",
+]
 tests = ["pytest>=8.3.5"]
 
 [tool.pyright]

@@ -10,7 +10,7 @@
             {% if user.is_authenticated %}
                 <hr class="my-4">
                 <p>Hello {{ user.username }}! You are successfully logged in.</p>
-                <a class="btn btn-primary btn-lg" href="{% url 'yield_curves:analyses_list' %}" role="button">View Analyses</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'yield_curves:analysis_list' %}" role="button">View Analyses</a>
             {% else %}
                 <hr class="my-4">
                 <p>Welcome to Yield Curves! Please login or create an account to get started.</p>

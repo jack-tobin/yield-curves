@@ -1,0 +1,67 @@
+.scatter-chip {
+    transition: all 0.2s ease-in-out;
+    background-color: #e7f3ff;
+    border-color: #0d6efd !important;
+    cursor: pointer;
+    user-select: none;
+}
+
+.scatter-chip:hover {
+    background-color: #cce7ff;
+    transform: translateY(-1px);
+}
+
+.scatter-chip[data-visible="false"] {
+    background-color: #f8f9fa;
+    border-color: #6c757d !important;
+    opacity: 0.6;
+}
+
+.scatter-chip[data-visible="false"] .scatter-label {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.scatter-chip .delete-scatter-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.scatter-chip:hover .delete-scatter-btn {
+    opacity: 1;
+}
+
+.scatter-chip .delete-scatter-btn:hover {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+}
+
+/* Add Scatter Chip Styles */
+.add-scatter-chip {
+    width: 40px;
+    height: 40px;
+    background-color: #198754;
+    border-color: #198754 !important;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-size: 16px;
+    border: 2px solid;
+}
+
+.add-scatter-chip:hover {
+    background-color: #157347;
+    border-color: #157347 !important;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+.add-scatter-chip:active {
+    transform: translateY(0) scale(1);
+}
+
+.add-scatter-chip:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}

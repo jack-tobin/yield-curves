@@ -22,7 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = conf.get("secret_key")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = conf.get("debug")
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
@@ -121,7 +120,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+# Static files directories for development
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link href="{% static 'css/pages/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+    <script type="module" src="{% static 'js/pages/profile.js' %}"></script>
+{% endblock %}
 
 {% block title %}Profile - Yield Curves{% endblock %}
 
@@ -142,20 +151,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-// Clear password fields if profile update is successful
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if there are success messages (profile updated)
-    const alerts = document.querySelectorAll('.alert-success');
-    if (alerts.length > 0) {
-        // Clear password fields
-        document.getElementById('current_password').value = '';
-        document.getElementById('new_password').value = '';
-        document.getElementById('confirm_password').value = '';
-    }
-});
-</script>
 {% endblock %}
