@@ -119,6 +119,8 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Run unit tests in Docker container
+        env:
+          CONFIG_PATH: ${{ github.workspace }}/settings/test/conf.yml
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/test-results:/app/test-results \
@@ -126,6 +128,8 @@ jobs:
             sh -c "uv run pytest tests/ --junitxml=/app/test-results/pytest.xml --cov --cov-report=xml:/app/test-results/coverage.xml"
 
       - name: Run Django tests in Docker container
+        env:
+          CONFIG_PATH: ${{ github.workspace }}/settings/test/conf.yml
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/test-results:/app/test-results \

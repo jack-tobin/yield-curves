@@ -27,7 +27,7 @@ class Configuration:
         if cwd_config_path.is_file():
             return cwd_config_path
 
-        raise FileNotFoundError("Configuration file not found.")
+        raise FileNotFoundError("Configuration file not found. Has CONFIG_PATH variable been set?")
 
     def _load_config(self) -> None:
         self._config_path = self._find_config_path()
