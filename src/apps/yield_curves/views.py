@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from src.apps.yield_curves.models import Analysis, BondScatter
@@ -42,8 +43,6 @@ def create_analysis(request):
             return JsonResponse({"success": False, "error": "Analysis name is required"})
 
         # Create the analysis
-        from django.urls import reverse
-
         analysis = Analysis.objects.create(name=name, user=request.user)
 
         return JsonResponse(
@@ -133,8 +132,6 @@ def get_selected_scatters_data(request, analysis_id):
         return JsonResponse({"error": "POST request required"}, status=405)
 
     try:
-        import json
-
         data = json.loads(request.body)
         scatter_ids = data.get("scatter_ids", [])
 

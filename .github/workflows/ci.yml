@@ -119,23 +119,19 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Run unit tests in Docker container
-        env:
-          CONFIG_PATH: ${{ github.workspace }}/settings/test/conf.yml
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/test-results:/app/test-results \
             yield-curves:latest \
-            sh -c "uv run pytest tests/ --junitxml=/app/test-results/pytest.xml --cov --cov-report=xml:/app/test-results/coverage.xml"
+            sh -c "CONFIG_PATH=settings/test/conf.yml uv run pytest tests/ --junitxml=/app/test-results/pytest.xml --cov --cov-report=xml:/app/test-results/coverage.xml"
 
       - name: Run Django tests in Docker container
-        env:
-          CONFIG_PATH: ${{ github.workspace }}/settings/test/conf.yml
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/test-results:/app/test-results \
             -e DJANGO_SETTINGS_MODULE=myproject.settings.test \
             yield-curves:latest \
-            sh -c "uv run python manage.py test django_tests --keepdb --parallel --debug-mode"
+            sh -c "CONFIG_PATH=settings/test/conf.yml uv run python manage.py test django_tests --keepdb --parallel --debug-mode"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
