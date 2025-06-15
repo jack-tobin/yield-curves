@@ -67,10 +67,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         id: build
@@ -149,3 +146,14 @@ jobs:
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
             uv run pytest tests/ -v
+
+      - name: Run Django tests in container
+        run: |
+          IMAGE_TAG=$(echo '${{ needs.build.outputs.image-tag }}' | head -n1)
+
+          docker run --rm \
+            --entrypoint="" \
+            --network host \
+            -e CONFIG_PATH=settings/test/conf.yml \
+            $IMAGE_TAG \
+            python -m src.manage test --verbosity=2
