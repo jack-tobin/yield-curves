@@ -145,7 +145,7 @@ jobs:
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
-            uv run pytest tests/ -v
+            uv run pytest tests/ -v --ignore=tests/apps/
 
       - name: Run Django tests in container
         run: |
