@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from src.constants import DAYS_IN_YEAR
+
 
 class Bond(models.Model):
     isin = models.CharField(max_length=255, primary_key=True, unique=True)
@@ -33,6 +35,10 @@ class BondMetric(models.Model):
 
     pk = models.CompositePrimaryKey("date", "isin")
     bond = models.ForeignKey(Bond, on_delete=models.CASCADE)
+
+    @property
+    def ttm(self):
+        return (self.bond.maturity_date - self.date).days / DAYS_IN_YEAR
 
     def __str__(self):
         items = {

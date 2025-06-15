@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from src.apps.yield_curves.models import Analysis, BondMetric, BondScatter
+from src.constants import DAYS_IN_YEAR
 
 
 @login_required
@@ -143,23 +144,19 @@ def get_selected_scatters_data(request, analysis_id):
         bond_scatters = analysis.bond_scatters.filter(id__in=scatter_ids)
 
         selected_data = []
-        today = dt.date.today()
-
         for bond_scatter in bond_scatters:
             bond_metrics = bond_scatter.get_bond_data()
 
             scatter_data = []
             for metric in bond_metrics:
-                ttm_days = (metric.bond.maturity_date - today).days
-                ttm_years = ttm_days / 365.25
-                if ttm_years < 0:
+                if metric.ttm < 0:
                     continue  # Exclude bonds with negative time to maturity
 
                 scatter_data.append(
                     {
                         "isin": metric.isin,
-                        "ttm_years": round(ttm_years, 2),
-                        "ttm_days": ttm_days,
+                        "ttm_years": round(metric.ttm, 2),
+                        "ttm_days": metric.ttm * DAYS_IN_YEAR,
                         "yield": float(metric._yield),
                         "maturity_date": metric.bond.maturity_date.isoformat(),
                         "coupon": float(metric.bond.coupon),
