@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yield_curves', '0004_analysis_is_deleted'),
+        ("yield_curves", "0004_analysis_is_deleted"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='analysis',
-            name='country',
+            model_name="analysis",
+            name="country",
         ),
         migrations.RemoveField(
-            model_name='analysis',
-            name='date',
+            model_name="analysis",
+            name="date",
         ),
     ]

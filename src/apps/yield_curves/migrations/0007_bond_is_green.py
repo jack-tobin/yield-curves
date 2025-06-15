@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yield_curves', '0006_bondscatter_yieldcurve'),
+        ("yield_curves", "0006_bondscatter_yieldcurve"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bond',
-            name='is_green',
+            model_name="bond",
+            name="is_green",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -45,13 +45,6 @@ jobs:
         run: |
           uv run piprot --outdated
 
-      - name: Upload safety report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: safety-report
-          path: safety-report.json
-
   version-bump:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'

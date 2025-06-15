@@ -5,33 +5,56 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yield_curves', '0005_remove_analysis_country_remove_analysis_date'),
+        ("yield_curves", "0005_remove_analysis_country_remove_analysis_date"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BondScatter',
+            name="BondScatter",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('country', models.CharField(max_length=2)),
-                ('date', models.DateField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('analysis', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bond_scatters', to='yield_curves.analysis')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("country", models.CharField(max_length=2)),
+                ("date", models.DateField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "analysis",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="bond_scatters",
+                        to="yield_curves.analysis",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['created_at'],
+                "ordering": ["created_at"],
             },
         ),
         migrations.CreateModel(
-            name='YieldCurve',
+            name="YieldCurve",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('bond_scatter', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='yield_curve', to='yield_curves.bondscatter')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "bond_scatter",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="yield_curve",
+                        to="yield_curves.bondscatter",
+                    ),
+                ),
             ],
         ),
     ]

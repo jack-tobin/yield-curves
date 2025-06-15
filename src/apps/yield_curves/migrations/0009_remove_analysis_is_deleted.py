@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('yield_curves', '0008_bond_is_indexed'),
+        ("yield_curves", "0008_bond_is_indexed"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='analysis',
-            name='is_deleted',
+            model_name="analysis",
+            name="is_deleted",
         ),
     ]
