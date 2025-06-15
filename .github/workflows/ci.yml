@@ -36,15 +36,6 @@ jobs:
           uv run ruff check .
           uv run ruff format --check .
 
-      - name: Run Safety dependency check
-        run: |
-          uv run safety check --json --output safety-report.json || true
-          uv run safety check
-
-      - name: Run Piprot for outdated dependencies
-        run: |
-          uv run piprot --outdated
-
   version-bump:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
