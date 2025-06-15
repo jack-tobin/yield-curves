@@ -10,7 +10,7 @@ RUN apt update && apt install build-essential -y
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-dev
+    uv sync --locked --no-install-project --all-groups
 
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
@@ -21,8 +21,11 @@ COPY scripts/ /app/scripts
 COPY src /app/src
 COPY uv.lock /app/uv.lock
 
+# Add in tests subdir
+COPY tests /app/tests
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev
+    uv sync --locked --all-groups
 
 ENV PATH="/app/.venv/bin:$PATH"
 

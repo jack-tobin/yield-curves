@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master, develop]
+    branches: [master]
   pull_request:
-    branches: [master, develop]
+    branches: [master]
 
 env:
   REGISTRY: ghcr.io
@@ -136,7 +136,7 @@ jobs:
         run: |
           docker load --input /tmp/image.tar
 
-      - name: Run tests in container
+      - name: Run pytest in container
         run: |
           # Get the image tag from the build job
           IMAGE_TAG=$(echo '${{ needs.build.outputs.image-tag }}' | head -n1)
@@ -148,4 +148,4 @@ jobs:
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
-            python -m pytest tests/ -v
+            uv run pytest tests/ -v
