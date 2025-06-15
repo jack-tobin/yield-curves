@@ -3,12 +3,13 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max, Min
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from src.apps.yield_curves.models import Analysis, BondScatter
+from src.apps.yield_curves.models import Analysis, BondMetric, BondScatter
 
 
 @login_required
@@ -151,6 +152,8 @@ def get_selected_scatters_data(request, analysis_id):
             for metric in bond_metrics:
                 ttm_days = (metric.bond.maturity_date - today).days
                 ttm_years = ttm_days / 365.25
+                if ttm_years < 0:
+                    continue  # Exclude bonds with negative time to maturity
 
                 scatter_data.append(
                     {
@@ -181,5 +184,29 @@ def get_selected_scatters_data(request, analysis_id):
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@login_required
+def get_bond_date_range(request):
+    """Get the available date range for bond data."""
+    try:
+        date_range = BondMetric.objects.aggregate(min_date=Min("date"), max_date=Max("date"))
+
+        min_date = date_range["min_date"]
+        max_date = date_range["max_date"]
+
+        if not min_date or not max_date:
+            return JsonResponse({"error": "No bond data available"}, status=404)
+
+        return JsonResponse(
+            {
+                "min_date": min_date.isoformat(),
+                "max_date": max_date.isoformat(),
+                "default_date": max_date.isoformat(),  # Default to the most recent date
+            }
+        )
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

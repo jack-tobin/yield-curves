@@ -58,19 +58,54 @@ class AnalysisDetailPage {
     }
   }
 
-  initializePage() {
-    // Set default date to today
-    const dateInput = document.getElementById("scatter-date");
-    if (dateInput) {
-      dateInput.valueAsDate = new Date();
-    }
-
+  async initializePage() {
     // Initialize chart
     this.chartManager.initializeEmptyChart();
+
+    // Set up date input with restrictions based on available data
+    await this.setupDateInput();
 
     // Auto-load chart if there are scatters
     if (window.HAS_SCATTERS) {
       this.chartManager.loadAllSelectedScatters();
+    }
+  }
+
+  async setupDateInput() {
+    const dateInput = document.getElementById("scatter-date");
+    if (!dateInput) return;
+
+    try {
+      // Fetch the available date range from the API
+      const response = await fetch("/yield-curves/api/bond-date-range/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": Utils.getCsrfToken(),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const dateRange = await response.json();
+
+      // Set the date input constraints
+      dateInput.min = dateRange.min_date;
+      dateInput.max = dateRange.max_date;
+      dateInput.value = dateRange.default_date;
+
+      console.log(
+        `Date range configured: ${dateRange.min_date} to ${dateRange.max_date}, default: ${dateRange.default_date}`,
+      );
+    } catch (error) {
+      console.error("Failed to fetch bond date range:", error);
+      // Fallback: set default to today if API call fails
+      dateInput.valueAsDate = new Date();
+      Utils.showAlert(
+        "Warning: Could not load available date range. Please ensure you select a date with available bond data.",
+      );
     }
   }
 }

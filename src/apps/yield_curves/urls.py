@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+
+from src.apps.yield_curves import views
 
 app_name = "yield_curves"
 
@@ -19,4 +20,5 @@ urlpatterns = [
         views.get_selected_scatters_data,
         name="get_selected_scatters_data",
     ),
+    path("api/bond-date-range/", views.get_bond_date_range, name="get_bond_date_range"),
 ]
