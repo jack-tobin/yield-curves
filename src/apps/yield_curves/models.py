@@ -1,3 +1,4 @@
+import datetime as dt
 from functools import cached_property
 
 import QuantLib as ql
@@ -28,34 +29,12 @@ class Bond(models.Model):
         }
         return f"Bond({', '.join([f'{k}={v}' for k, v in items.items()])})"
 
-
-class BondMetric(models.Model):
-    date = models.DateField()
-    isin = models.CharField(max_length=255)
-    clean_price = models.DecimalField(max_digits=16, decimal_places=4)
-    dirty_price = models.DecimalField(max_digits=16, decimal_places=4)
-    _yield = models.DecimalField(db_column="yield", max_digits=16, decimal_places=4)
-
-    pk = models.CompositePrimaryKey("date", "isin")
-    bond = models.ForeignKey(Bond, on_delete=models.CASCADE)
-
-    @property
-    def ttm(self):
-        return (self.bond.maturity_date - self.date).days / DAYS_IN_YEAR
-
-    def __str__(self):
-        items = {
-            "isin": self.isin,
-            "date": self.date.isoformat(),
-        }
-        return f"BondMetric({', '.join([f'{k}={v}' for k, v in items.items()])})"
-
     @cached_property
-    def __ql_day_count(self) -> ql.ActualActual:
+    def _ql_day_count(self) -> ql.ActualActual:
         return ql.ActualActual(ql.ActualActual.Bond)
 
     @cached_property
-    def __ql_calendar(self) -> ql.Calendar:
+    def _ql_calendar(self) -> ql.Calendar:
         match self.country.upper():
             case "DE":
                 return ql.Germany(ql.Germany.Settlement)
@@ -63,13 +42,12 @@ class BondMetric(models.Model):
                 raise ValueError(f"Unsupported country: {self.country}")
 
     @cached_property
-    def __ql_frequency(self) -> ql.Period:
+    def _ql_frequency(self) -> ql.Period:
         return ql.Period(ql.Semiannual)
 
-    @cached_property
-    def __ql_bond(self) -> ql.FixedRateBond:
+    def build_ql_bond(self, date: dt.date) -> ql.FixedRateBond:
         # Convert dates to QuantLib format
-        ql_date = ql.Date(self.date.day, self.date.month, self.date.year)
+        ql_date = ql.Date(date.day, date.month, date.year)
         ql_maturity_date = ql.Date(
             self.maturity_date.day,
             self.maturity_date.month,
@@ -83,8 +61,8 @@ class BondMetric(models.Model):
         schedule = ql.Schedule(
             ql_date,
             ql_maturity_date,
-            self.__ql_frequency,
-            self.__ql_calendar,
+            self._ql_frequency,
+            self._ql_calendar,
             business_convention,
             business_convention,
             ql.DateGeneration.Backward,
@@ -92,18 +70,41 @@ class BondMetric(models.Model):
         )
 
         return ql.FixedRateBond(
-            settlementDaysInteger=0,
+            settlementDays=0,
             faceAmount=100.0,
             schedule=schedule,
             coupons=[self.coupon / 100.0],
-            paymentDayCounter=self.__ql_day_count,
+            paymentDayCounter=self._ql_day_count,
         )
 
-    @cached_property
-    def __ql_bond_helper(self):
-        # Create helper for curve building
+
+class BondMetric(models.Model):
+    bond = models.ForeignKey(Bond, on_delete=models.CASCADE)
+    date = models.DateField()
+    clean_price = models.DecimalField(max_digits=16, decimal_places=4)
+    dirty_price = models.DecimalField(max_digits=16, decimal_places=4)
+    _yield = models.DecimalField(db_column="yield", max_digits=16, decimal_places=4)
+
+    pk = models.CompositePrimaryKey("date", "bond_id")
+
+    @property
+    def ttm(self):
+        return (self.bond.maturity_date - self.date).days / DAYS_IN_YEAR
+
+    def __str__(self):
+        items = {
+            "isin": self.bond.isin,
+            "date": self.date.isoformat(),
+        }
+        return f"BondMetric({', '.join([f'{k}={v}' for k, v in items.items()])})"
+
+    def build_ql_bond_helper(self):
+        ql_bond = self.bond.build_ql_bond(self.date)
         quote = ql.QuoteHandle(ql.SimpleQuote(self.clean_price))
-        return ql.BondHelper(quote, self.__ql_bond)
+        return ql.BondHelper(
+            quote,
+            ql_bond,
+        )
 
 
 class Analysis(models.Model):
