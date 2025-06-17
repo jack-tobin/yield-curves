@@ -1,3 +1,6 @@
+from functools import cached_property
+
+import QuantLib as ql
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -15,7 +18,7 @@ class Bond(models.Model):
 
     @property
     def country(self):
-        return self.isin[:2]
+        return self.isin[:2].upper()
 
     def __str__(self):
         items = {
@@ -46,6 +49,65 @@ class BondMetric(models.Model):
             "date": self.date.isoformat(),
         }
         return f"BondMetric({', '.join([f'{k}={v}' for k, v in items.items()])})"
+
+    @cached_property
+    def __ql_day_count(self) -> ql.ActualActual:
+        return ql.ActualActual(ql.ActualActual.Bond)
+
+    @cached_property
+    def __ql_calendar(self) -> ql.Calendar:
+        match self.country.upper():
+            case "DE":
+                return ql.Germany(ql.Germany.Settlement)
+            case _:
+                raise ValueError(f"Unsupported country: {self.country}")
+
+    @cached_property
+    def __ql_frequency(self) -> ql.Period:
+        return ql.Period(ql.Semiannual)
+
+    @cached_property
+    def __ql_business_convention(self) -> ql.BusinessDayConvention:
+        return ql.Following
+
+    @cached_property
+    def __ql_bond(self) -> ql.FixedRateBond:
+        # Convert dates to QuantLib format
+        ql_date = ql.Date(self.date.day, self.date.month, self.date.year)
+        ql_maturity_date = ql.Date(
+            self.maturity_date.day,
+            self.maturity_date.month,
+            self.maturity_date.year,
+        )
+
+        # Assume Following business convention.
+        business_convention = ql.Following
+
+        # Create schedule
+        schedule = ql.Schedule(
+            ql_date,
+            ql_maturity_date,
+            self.__ql_frequency,
+            self.__ql_calendar,
+            business_convention,
+            business_convention,
+            ql.DateGeneration.Backward,
+            False,
+        )
+
+        return ql.FixedRateBond(
+            settlementDaysInteger=0,
+            faceAmount=100.0,
+            schedule=schedule,
+            coupons=[self.coupon / 100.0],
+            paymentDayCounter=day_count,
+        )
+
+    @cached_property
+    def __ql_bond_helper(self):
+        # Create helper for curve building
+        quote = ql.QuoteHandle(ql.SimpleQuote(self.clean_price))
+        return ql.BondHelper(quote, self.__ql_bond)
 
 
 class Analysis(models.Model):
