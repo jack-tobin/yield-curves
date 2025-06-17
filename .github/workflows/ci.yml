@@ -156,4 +156,4 @@ jobs:
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
-            python -m src.manage test --verbosity=2
+            python -m src.manage test tests/apps/ --verbosity=2
