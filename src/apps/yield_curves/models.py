@@ -128,7 +128,7 @@ class BondScatter(models.Model):
         """Get bond data for this scatter configuration."""
         bond_metrics = BondMetric.objects.filter(
             date=self.date,
-            isin__startswith=self.country,
+            bond__isin__startswith=self.country,
             bond__is_green=False,
             bond__is_indexed=False,
         ).select_related("bond")

@@ -154,7 +154,7 @@ def get_selected_scatters_data(request, analysis_id):
 
                 scatter_data.append(
                     {
-                        "isin": metric.isin,
+                        "isin": metric.bond.isin,
                         "ttm_years": round(metric.ttm, 2),
                         "ttm_days": metric.ttm * DAYS_IN_YEAR,
                         "yield": float(metric._yield),
