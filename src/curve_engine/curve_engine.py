@@ -7,7 +7,6 @@ from bond market data using QuantLib's numerical methods.
 from __future__ import annotations
 
 import datetime as dt
-from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 from typing import overload
@@ -22,26 +21,6 @@ class CurveMethod(Enum):
     CUBIC_ZERO = ql.PiecewiseCubicZero
     LOG_LINEAR_DISCOUNT = ql.PiecewiseLogLinearDiscount
     NATURAL_LOG_CUBIC_DISCOUNT = ql.PiecewiseNaturalLogCubicDiscount
-
-
-@dataclass(frozen=True)
-class FixedCouponBond:
-    maturity_date: dt.date
-    coupon: float
-    price: float
-    _yield: float
-    valuation_date: dt.date
-    face_value: float = 100.0
-
-    @classmethod
-    def from_bond_metric(cls, bond_metric: BondMetric) -> FixedCouponBond:
-        return cls(
-            maturity_date=bond_metric.maturity_date,
-            coupon=bond_metric.coupon,
-            price=bond_metric.price,
-            _yield=bond_metric._yield,
-            valuation_date=bond_metric.valuation_date,
-        )
 
 
 class YieldCurveCalibrator:

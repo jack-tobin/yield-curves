@@ -67,10 +67,6 @@ class BondMetric(models.Model):
         return ql.Period(ql.Semiannual)
 
     @cached_property
-    def __ql_business_convention(self) -> ql.BusinessDayConvention:
-        return ql.Following
-
-    @cached_property
     def __ql_bond(self) -> ql.FixedRateBond:
         # Convert dates to QuantLib format
         ql_date = ql.Date(self.date.day, self.date.month, self.date.year)
@@ -100,7 +96,7 @@ class BondMetric(models.Model):
             faceAmount=100.0,
             schedule=schedule,
             coupons=[self.coupon / 100.0],
-            paymentDayCounter=day_count,
+            paymentDayCounter=self.__ql_day_count,
         )
 
     @cached_property
