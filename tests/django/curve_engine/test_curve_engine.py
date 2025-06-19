@@ -42,7 +42,7 @@ class TestCalibrator(TestCase):
                 date=dt.date(2023, 1, 1),
                 clean_price=68.13904096546891,
                 dirty_price=68.13904096546891,
-                _yield=6.394454706633495,
+                _yield=6.397487514542517,
                 bond=Bond(
                     isin="DE2345678901",
                     description="Test Bond 3",
