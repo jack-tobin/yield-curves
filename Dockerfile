@@ -20,6 +20,7 @@ COPY settings/ /app/settings
 COPY scripts/ /app/scripts
 COPY src /app/src
 COPY uv.lock /app/uv.lock
+COPY Makefile /app/Makefile
 
 # Add in tests subdir
 COPY tests /app/tests

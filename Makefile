@@ -121,11 +121,31 @@ get-data-prod:
 
 pytest:
 	@echo "🧪 Running tests..."
-	CONFIG_PATH=settings/test/conf.yml pytest -v tests/ --ignore=tests/django/
+	CONFIG_PATH=settings/test/conf.yml uv run pytest -v tests/ --ignore=tests/django/
 
 django-test:
 	@echo "🧪 Running Django tests..."
-	CONFIG_PATH=settings/test/conf.yml python -m src.manage test tests/django/
+	CONFIG_PATH=settings/test/conf.yml python -m src.manage test tests/django/ --verbosity=2
+
+# =============================================================================
+# Linting
+# =============================================================================
+
+ruff-check:
+	@echo "🪄 Running Ruff linting..."
+	uv run ruff check .
+
+ruff-fix:
+	@echo "🪄 Running Ruff fixing..."
+	uv run ruff check . --fix
+
+ruff-format-check:
+	@echo "🪄 Running Ruff formatting check..."
+	uv run ruff format --check .
+
+ruff-format:
+	@echo "🪄 Running Ruff formatting..."
+	uv run ruff format .
 
 # =============================================================================
 # Utility Commands

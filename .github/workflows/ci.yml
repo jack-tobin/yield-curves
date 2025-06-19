@@ -33,11 +33,11 @@ jobs:
 
       - name: Run ruff linter
         run: |
-          uv run ruff check .
+          make ruff-check
 
       - name: Run ruff formatter check
         run: |
-          uv run ruff format --check .
+          make ruff-format-check
 
   build:
     name: Build Docker Image
@@ -145,7 +145,7 @@ jobs:
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
-            uv run pytest tests/ -v --ignore=tests/apps/
+            make pytest
 
       - name: Run Django tests in container
         run: |
@@ -156,4 +156,4 @@ jobs:
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
-            python -m src.manage test tests/apps/ --verbosity=2
+            make django-test
