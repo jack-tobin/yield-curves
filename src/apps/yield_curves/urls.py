@@ -20,5 +20,10 @@ urlpatterns = [
         views.get_selected_scatters_data,
         name="get_selected_scatters_data",
     ),
+    path(
+        "analysis/<int:analysis_id>/scatter/<int:scatter_id>/zero-curve/",
+        views.get_zero_curve_data,
+        name="get_zero_curve_data",
+    ),
     path("api/bond-date-range/", views.get_bond_date_range, name="get_bond_date_range"),
 ]

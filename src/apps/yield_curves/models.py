@@ -42,7 +42,7 @@ class Bond(models.Model):
                 raise ValueError(f"Unsupported country: {self.country}")
 
     def build_ql_bond(self, date: dt.date) -> ql.FixedRateBond | ql.ZeroCouponBond:
-        if self.coupon > 0:
+        if self.coupon > 0.0:
             return self._build_ql_fixed_rate_bond(date)
         else:
             return self._build_ql_zero_coupon_bond(date)
@@ -75,7 +75,7 @@ class Bond(models.Model):
             settlementDays=0,
             faceAmount=100.0,
             schedule=schedule,
-            coupons=[self.coupon / 100.0],
+            coupons=[float(self.coupon) / 100.0],
             paymentDayCounter=self._ql_day_count,
         )
 
@@ -119,7 +119,7 @@ class BondMetric(models.Model):
 
     def build_ql_bond_helper(self):
         ql_bond = self.bond.build_ql_bond(self.date)
-        quote = ql.QuoteHandle(ql.SimpleQuote(self.clean_price))
+        quote = ql.QuoteHandle(ql.SimpleQuote(float(self.clean_price)))
         return ql.BondHelper(
             quote,
             ql_bond,

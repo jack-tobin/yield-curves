@@ -9,11 +9,24 @@
     background-color: #f8f9fa;
     border-radius: 0.5rem;
     border: 1px solid #e9ecef;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
-
+/* Ensure the scatters list container doesn't clip dropdowns */
+#scatters-list {
+    overflow: visible;
+    position: relative;
+    z-index: 10;
+}
 
 /* Chart container styles */
+#chart-container {
+    position: relative;
+    z-index: 1;
+}
+
 #chart-container canvas {
     width: 100% !important;
     height: 100% !important;

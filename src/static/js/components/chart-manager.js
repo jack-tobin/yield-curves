@@ -6,6 +6,7 @@ import { Utils } from "../core/utils.js";
 export class ChartManager {
   constructor() {
     this.bondChart = null;
+    this.zeroCurveData = new Map(); // Store zero curve data by scatter ID
     this.colors = [
       "rgba(54, 162, 235, 0.8)", // Blue
       "rgba(255, 99, 132, 0.8)", // Red
@@ -58,6 +59,38 @@ export class ChartManager {
     }
   }
 
+  async loadZeroCurveData(scatterId) {
+    try {
+      const response = await fetch(
+        `/yield-curves/analysis/${window.ANALYSIS_ID}/scatter/${scatterId}/zero-curve/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": Utils.getCsrfToken(),
+          },
+        },
+      );
+
+      const zeroCurveData = await response.json();
+
+      if (zeroCurveData.success) {
+        this.zeroCurveData.set(scatterId, zeroCurveData);
+      } else {
+        throw new Error(
+          zeroCurveData.error || "Failed to load zero curve data",
+        );
+      }
+    } catch (error) {
+      console.error("Error loading zero curve data:", error);
+      throw error;
+    }
+  }
+
+  removeZeroCurveData(scatterId) {
+    this.zeroCurveData.delete(scatterId);
+  }
+
   createMultiScatterChart(scatterData) {
     const ctx = document.getElementById("bond-scatter-chart").getContext("2d");
 
@@ -66,7 +99,12 @@ export class ChartManager {
       this.bondChart.destroy();
     }
 
-    const datasets = scatterData.map((scatter, index) => {
+    const datasets = [];
+
+    // Add scatter plot datasets
+    scatterData.forEach((scatter) => {
+      // Use scatter ID for consistent color assignment
+      const colorIndex = scatter.scatter.id % this.colors.length;
       const chartData = scatter.data.map((bond) => ({
         x: bond.ttm_years,
         y: bond.yield,
@@ -76,18 +114,42 @@ export class ChartManager {
         description: bond.description,
       }));
 
-      return {
+      datasets.push({
         label: scatter.scatter.display_name,
         data: chartData,
-        backgroundColor: this.colors[index % this.colors.length],
-        borderColor: this.colors[index % this.colors.length].replace(
-          "0.8",
-          "1",
-        ),
+        backgroundColor: this.colors[colorIndex % this.colors.length],
+        borderColor: this.colors[colorIndex].replace("0.8", "1"),
         borderWidth: 1,
         pointRadius: 6,
         pointHoverRadius: 8,
-      };
+        type: "scatter",
+      });
+
+      // Add zero curve dataset if enabled
+      const scatterId = scatter.scatter.id.toString();
+      const chip = document.querySelector(`[data-scatter-id="${scatterId}"]`);
+      const isZeroCurveEnabled = chip && chip.dataset.zeroCurve === "true";
+
+      if (isZeroCurveEnabled && this.zeroCurveData.has(scatterId)) {
+        const zeroCurve = this.zeroCurveData.get(scatterId);
+        const zeroCurveChartData = zeroCurve.data.map((point) => ({
+          x: point.ttm_years,
+          y: point.zero_rate,
+        }));
+
+        datasets.push({
+          label: zeroCurve.scatter.display_name,
+          data: zeroCurveChartData,
+          backgroundColor: "transparent",
+          borderColor: this.colors[colorIndex].replace("0.8", "1"),
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          type: "line",
+          tension: 0.1,
+          fill: false,
+        });
+      }
     });
 
     this.bondChart = new Chart(ctx, {
@@ -125,18 +187,32 @@ export class ChartManager {
             callbacks: {
               title: function (context) {
                 const point = context[0];
-                return `ISIN: ${point.raw.isin}`;
+                if (point.raw.isin) {
+                  return `ISIN: ${point.raw.isin}`;
+                } else {
+                  return `Zero Curve Point`;
+                }
               },
               label: function (context) {
                 const point = context.raw;
-                return [
-                  `Dataset: ${context.dataset.label}`,
-                  `TTM: ${point.x} years`,
-                  `Yield: ${point.y}%`,
-                  `Coupon: ${point.coupon}%`,
-                  `Maturity: ${point.maturityDate}`,
-                  `Description: ${point.description.substring(0, 50)}...`,
-                ];
+                if (point.isin) {
+                  // Bond scatter point
+                  return [
+                    `Dataset: ${context.dataset.label}`,
+                    `TTM: ${point.x} years`,
+                    `Yield: ${point.y}%`,
+                    `Coupon: ${point.coupon}%`,
+                    `Maturity: ${point.maturityDate}`,
+                    `Description: ${point.description.substring(0, 50)}...`,
+                  ];
+                } else {
+                  // Zero curve point
+                  return [
+                    `Dataset: ${context.dataset.label}`,
+                    `TTM: ${point.x} years`,
+                    `Zero Rate: ${point.y}%`,
+                  ];
+                }
               },
             },
           },
@@ -192,5 +268,6 @@ export class ChartManager {
       this.bondChart.destroy();
       this.bondChart = null;
     }
+    this.zeroCurveData.clear();
   }
 }

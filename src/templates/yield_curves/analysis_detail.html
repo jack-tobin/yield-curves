@@ -42,11 +42,34 @@
                                 {% for scatter in bond_scatters %}
                                 <div class="scatter-chip d-flex align-items-center gap-2 px-3 py-2 border rounded-pill position-relative"
                                         data-scatter-id="{{ scatter.id }}"
-                                        data-visible="true">
+                                        data-visible="true"
+                                        data-zero-curve="false">
                                     <span class="scatter-label">{{ scatter.country }} {{ scatter.date|date:"M d, Y" }}</span>
-                                    <button class="btn-close btn-close-sm delete-scatter-btn"
-                                            data-scatter-id="{{ scatter.id }}"
-                                            aria-label="Delete scatter"></button>
+                                    <div class="dropdown">
+                                        <button class="scatter-menu-btn" 
+                                                type="button" 
+                                                data-bs-toggle="dropdown" 
+                                                aria-expanded="false"
+                                                data-scatter-id="{{ scatter.id }}">
+                                            <i class="fas fa-ellipsis-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <button class="dropdown-item toggle-zero-curve-btn" 
+                                                        data-scatter-id="{{ scatter.id }}">
+                                                    <i class="fas fa-chart-line me-2"></i>
+                                                    <span class="zero-curve-text">Show Zero Curve</span>
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item text-danger delete-scatter-btn" 
+                                                        data-scatter-id="{{ scatter.id }}">
+                                                    <i class="fas fa-trash me-2"></i>Delete
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 {% endfor %}
                             </div>

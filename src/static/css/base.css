@@ -4,6 +4,15 @@ body {
         -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Prevent card overflow from clipping dropdowns */
+.card {
+    overflow: visible;
+}
+
+.card-body {
+    overflow: visible;
+}
+
 /* Common button styles */
 .btn-loading {
     pointer-events: none;
