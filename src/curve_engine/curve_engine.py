@@ -9,7 +9,6 @@ from __future__ import annotations
 import datetime as dt
 from datetime import date
 from enum import Enum
-from typing import overload
 
 import QuantLib as ql
 
@@ -56,11 +55,10 @@ class YieldCurveCalibrator:
     def engine(self):
         return ql.DiscountingBondEngine(ql.YieldTermStructureHandle(self.curve))
 
-    @overload
     def zero_rate(self, ttm: float) -> float:
         if not self.curve:
             raise ValueError("Curve not calibrated yet")
-        return self.curve.zeroRate(ttm, ql.Compounded).rate()
+        return self.curve.zeroRate(ttm, ql.Continuous).rate()
 
     def forward_rate(
         self,

@@ -119,9 +119,13 @@ get-data-prod:
 # Testing
 # =============================================================================
 
-test:
+pytest:
 	@echo "🧪 Running tests..."
-	CONFIG_PATH=settings/test/conf.yml pytest -v tests/
+	CONFIG_PATH=settings/test/conf.yml pytest -v tests/ --ignore=tests/django/
+
+django-test:
+	@echo "🧪 Running Django tests..."
+	CONFIG_PATH=settings/test/conf.yml python -m src.manage test tests/django/
 
 # =============================================================================
 # Utility Commands

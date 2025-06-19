@@ -30,7 +30,7 @@ class Bond(models.Model):
         return f"Bond({', '.join([f'{k}={v}' for k, v in items.items()])})"
 
     @cached_property
-    def _ql_day_count(self) -> ql.ActualActual:
+    def _ql_day_count(self) -> ql.DayCounter:
         return ql.ActualActual(ql.ActualActual.Bond)
 
     @cached_property
@@ -41,11 +41,16 @@ class Bond(models.Model):
             case _:
                 raise ValueError(f"Unsupported country: {self.country}")
 
-    @cached_property
-    def _ql_frequency(self) -> ql.Period:
-        return ql.Period(ql.Semiannual)
+    def build_ql_bond(self, date: dt.date) -> ql.FixedRateBond | ql.ZeroCouponBond:
+        if self.coupon > 0:
+            return self._build_ql_fixed_rate_bond(date)
+        else:
+            return self._build_ql_zero_coupon_bond(date)
 
-    def build_ql_bond(self, date: dt.date) -> ql.FixedRateBond:
+    def _build_ql_fixed_rate_bond(
+        self,
+        date: dt.date,
+    ):
         # Convert dates to QuantLib format
         ql_date = ql.Date(date.day, date.month, date.year)
         ql_maturity_date = ql.Date(
@@ -54,17 +59,14 @@ class Bond(models.Model):
             self.maturity_date.year,
         )
 
-        # Assume Following business convention.
-        business_convention = ql.Following
-
         # Create schedule
         schedule = ql.Schedule(
             ql_date,
             ql_maturity_date,
-            self._ql_frequency,
+            ql.Period(ql.Semiannual),
             self._ql_calendar,
-            business_convention,
-            business_convention,
+            ql.Following,
+            ql.Following,
             ql.DateGeneration.Backward,
             False,
         )
@@ -75,6 +77,23 @@ class Bond(models.Model):
             schedule=schedule,
             coupons=[self.coupon / 100.0],
             paymentDayCounter=self._ql_day_count,
+        )
+
+    def _build_ql_zero_coupon_bond(
+        self,
+        date: dt.date,
+    ):
+        ql_maturity_date = ql.Date(
+            self.maturity_date.day,
+            self.maturity_date.month,
+            self.maturity_date.year,
+        )
+        return ql.ZeroCouponBond(
+            settlementDays=0,
+            calendar=self._ql_calendar,
+            faceAmount=100.0,
+            maturityDate=ql_maturity_date,
+            paymentConvention=ql.Following,
         )
 
 
