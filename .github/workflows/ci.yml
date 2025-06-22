@@ -161,7 +161,6 @@ jobs:
   deploy:
     name: Deploy to Render
     needs: [build, test]
-    manual: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
