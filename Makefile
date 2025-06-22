@@ -50,7 +50,13 @@ run-local:
 	@echo "🚀 Running app locally with local database..."
 	@$(MAKE) db-up
 	@sleep 3
-	CONFIG_PATH=settings/local/conf.yml CONFIG__DB__YIELD_CURVES__PASSWORD=postgres python -m src.manage runserver
+	CONFIG_PATH=settings/local/conf.yml CONFIG__DB__YIELD_CURVES__PASSWORD=postgres python -m src.manage runserver --nostatic
+
+run-gunicorn-local:
+	@echo "🚀 Running app locally with gunicorn and local database..."
+	@$(MAKE) db-up
+	@sleep 3
+	CONFIG_PATH=settings/local/conf.yml CONFIG__DB__YIELD_CURVES__PASSWORD=postgres gunicorn src.config.wsgi
 
 # 2. Run app in docker container with local docker db
 run-docker:

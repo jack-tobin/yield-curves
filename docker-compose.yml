@@ -6,9 +6,9 @@ services:
     volumes:
       - ./src:/app/src
     environment:
-      CONFIG_PATH: ${CONFIG_PATH:-settings/local/conf.yml}
-      DJANGO_HOST: 0.0.0.0
-      DJANGO_PORT: 8000
+      CONFIG_PATH: settings/local/conf.yml
+      CONFIG__DB__YIELD_CURVES__HOST: postgres # Name of docker-compose service.
+      CONFIG__DB__YIELD_CURVES__PASSWORD: postgres # Password for local docker db.
     env_file:
       - .env
     depends_on:

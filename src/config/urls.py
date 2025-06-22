@@ -1,15 +1,14 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import include, path
-
-from src.apps.yield_curves.views import analysis_list
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("src.apps.accounts.urls")),
     path("yield-curves/", include("src.apps.yield_curves.urls")),
-    path("yield-curves/analysis", analysis_list, name="home"),
+    path("", lambda request: redirect("yield-curves/analysis/"), name="home"),
 ]
 
 
