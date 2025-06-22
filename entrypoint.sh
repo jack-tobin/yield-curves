@@ -10,4 +10,4 @@ PORT="${DJANGO_PORT:-$PORT}"
 python -m src.manage migrate
 python -m src.manage collectstatic --noinput
 
-gunicorn src.config.wsgi "$HOST:$PORT"
+gunicorn src.config.wsgi --bind "$HOST:$PORT"

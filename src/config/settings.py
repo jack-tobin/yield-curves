@@ -24,7 +24,7 @@ SECRET_KEY = conf.get("secret_key")
 
 DEBUG = conf.get("debug")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
 
 
 # Application definition
@@ -128,7 +128,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-STATIC_ROOT = BASE_DIR / "static" / "static"
+STATIC_ROOT = BASE_DIR / "static_collected"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
