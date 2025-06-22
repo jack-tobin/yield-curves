@@ -4,7 +4,7 @@ db:
   yield_curves:
     host: dpg-d0u5sere5dus738o10t0-a.frankfurt-postgres.render.com
     port: 5432
-    user: app
+    user: admin
     name: yield_curves
 
 debug: false

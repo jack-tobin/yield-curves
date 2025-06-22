@@ -2,19 +2,20 @@
 
 import datetime as dt
 import re
+import tempfile
+from dataclasses import dataclass, field
 from pathlib import Path
-from django.db.models import Max
-from pydantic import BaseModel as PydanticBaseModel
+from string import ascii_uppercase
+
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import tempfile
-from dataclasses import dataclass, field
-from string import ascii_uppercase
+from django.db.models import Max
+from pydantic import BaseModel as PydanticBaseModel
 
-from src.utils.logger import logger
-from src.utils.data import Extractor, Transformer, Loader, run_pipeline
 from src.apps.yield_curves.models import Bond, BondMetric
+from src.utils.data import Extractor, Loader, Transformer, run_pipeline
+from src.utils.logger import logger
 
 
 class ArbitraryBaseModel(PydanticBaseModel):
@@ -312,12 +313,11 @@ class BundesbankDataLoader(Loader):
 
             metric = BondMetric(
                 date=row["date"],
-                isin=row["isin"],
                 clean_price=row["clean_price"],
                 dirty_price=row["dirty_price"],
                 _yield=row["yield"],
+                bond=bond,
             )
-            metric.bond = bond
             if metric.date > transformed.max_date_in_table:
                 metrics_to_insert.append(metric)
 
