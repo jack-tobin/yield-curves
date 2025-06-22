@@ -157,3 +157,20 @@ jobs:
             -e CONFIG_PATH=settings/test/conf.yml \
             $IMAGE_TAG \
             make django-test
+
+  deploy:
+    name: Deploy to Render
+    needs: [build, test]
+    manual: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Render
+        # Only run this step if the branch is main
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          curl "$deploy_url"
