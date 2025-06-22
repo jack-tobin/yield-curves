@@ -1,3 +1,5 @@
+version: "1"
+
 databases:
   - name: yield-curves
     databaseName: yield_curves
@@ -8,4 +10,21 @@ databases:
       - source: 0.0.0.0/0
         description: everywhere
     postgresMajorVersion: "16"
-version: "1"
+
+services:
+  - type: web
+    name: yield-curves-app
+    runtime: image
+    image:
+      url: ghcr.io/jack-tobin/yield-curves:latest
+    plan: free
+    envVars:
+      - key: CONFIG__DB__YIELD_CURVES__PASSWORD
+        sync: false
+      - key: CONFIG__DB__YIELD_CURVES__HOST
+        sync: false
+      - key: CONFIG__SECRET_KEY
+        sync: false
+      - key: CONFIG_PATH
+        sync: false
+    region: frankfurt
