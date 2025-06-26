@@ -170,6 +170,7 @@ jobs:
         # Only run this step if the branch is master
         if: github.ref == 'refs/heads/master'
         env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
-          curl "$deploy_url"
+          echo $RENDER_DEPLOY_HOOK
+          curl "$RENDER_DEPLOY_HOOK"
