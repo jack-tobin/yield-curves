@@ -25,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Django 5.2+ web framework
 - QuantLib 1.38+ quant library
 - PostgreSQL 16 database
-- NumPy and Pandas for data processing
 
 #### Data Sources
 - Bundsbank Government bond market data
