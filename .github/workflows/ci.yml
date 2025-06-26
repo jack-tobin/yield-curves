@@ -161,6 +161,7 @@ jobs:
   deploy:
     name: Deploy to Render
     needs: [build, test]
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -169,5 +170,7 @@ jobs:
       - name: Deploy to Render
         # Only run this step if the branch is master
         if: github.ref == 'refs/heads/master'
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
-          curl '${{ secrets.RENDER_DEPLOY_HOOK }}'
+          curl "$RENDER_DEPLOY_HOOK"
