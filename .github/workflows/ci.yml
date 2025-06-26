@@ -144,6 +144,7 @@ jobs:
             --entrypoint="" \
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
+            -v ${{ github.workspace }}/tests:/app/tests \
             $IMAGE_TAG \
             make pytest
 
@@ -155,6 +156,7 @@ jobs:
             --entrypoint="" \
             --network host \
             -e CONFIG_PATH=settings/test/conf.yml \
+            -v ${{ github.workspace }}/tests:/app/tests \
             $IMAGE_TAG \
             make django-test
 

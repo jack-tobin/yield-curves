@@ -22,9 +22,6 @@ COPY src /app/src
 COPY uv.lock /app/uv.lock
 COPY Makefile /app/Makefile
 
-# Add in tests subdir
-COPY tests /app/tests
-
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --all-groups
 
