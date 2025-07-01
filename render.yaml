@@ -4,12 +4,13 @@ databases:
   - name: yield-curves
     databaseName: yield_curves
     user: admin
-    plan: free
+    plan: basic-256mb
     region: frankfurt
     ipAllowList:
       - source: 0.0.0.0/0
         description: everywhere
     postgresMajorVersion: "16"
+    diskSizeGB: 1
 
 services:
   - type: web
