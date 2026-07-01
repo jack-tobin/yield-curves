@@ -244,26 +244,23 @@ class BundesbankDataTransformer(Transformer):
     def _parse_sheet(self, sheet: ExcelSheet) -> pd.DataFrame:
         data = sheet.data.copy()
         data = data.dropna()
+        data = data.iloc[1:, :]
 
         # Rename columns as A-Z.
         data.columns = list(ascii_uppercase)[: len(data.columns)]
 
-        # Fix ISIN.
-        data["isin"] = [
-            f"{row[0]}{row[1]}{int(row[2])}" for row in data.loc[:, ["A", "B", "C"]].values
-        ]
-
         # Rename
         data = data.rename(
             columns={
-                "D": "coupon",
-                "E": "description",
-                "F": "maturity_date",
-                "G": "residual_life",
-                "H": "issue_volume",
-                "I": "clean_price",
-                "J": "yield",
-                "K": "dirty_price",
+                "A": "isin",
+                "B": "coupon",
+                "C": "description",
+                "D": "maturity_date",
+                "E": "residual_life",
+                "F": "issue_volume",
+                "G": "clean_price",
+                "H": "yield",
+                "I": "dirty_price",
             }
         )
 
