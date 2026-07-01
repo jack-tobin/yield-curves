@@ -2,9 +2,9 @@ env: prod
 
 db:
   yield_curves:
-    host: dpg-d0u5sere5dus738o10t0-a.frankfurt-postgres.render.com
+    host: ep-silent-pond-abksnicg-pooler.eu-west-2.aws.neon.tech
     port: 5432
-    user: admin
+    user: neondb_owner
     name: yield_curves
 
 debug: true
